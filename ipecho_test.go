@@ -158,7 +158,7 @@ func TestServeDNS(t *testing.T) {
 		require.Equal(t, 0, len(d.GetMsgs()))
 	})
 
-	t.Run("Emtpy Subdomain", func(t *testing.T) {
+	t.Run("Empty Subdomain", func(t *testing.T) {
 		d := &dummyResponseWriter{}
 		p.ServeDNS(context.Background(), d, &dns.Msg{
 			Question: []dns.Question{
