@@ -10,21 +10,21 @@ import (
 	"golang.org/x/net/context"
 )
 
-type IPEcho struct {
+type ipecho struct {
 	Next   plugin.Handler
-	Config *Config
+	Config *config
 }
 
 // ServeDNS implements the middleware.Handler interface.
-func (p IPEcho) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg) (int, error) {
+func (p ipecho) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg) (int, error) {
 	p.echoIP(w, r)
 	return plugin.NextOrFailure(p.Name(), p.Next, ctx, w, r)
 }
 
 // Name implements the Handler interface.
-func (IPEcho) Name() string { return "IPEcho" }
+func (ipecho) Name() string { return "IPEcho" }
 
-func (p *IPEcho) echoIP(w dns.ResponseWriter, r *dns.Msg) {
+func (p *ipecho) echoIP(w dns.ResponseWriter, r *dns.Msg) {
 	if len(r.Question) <= 0 {
 		return
 	}
@@ -86,7 +86,7 @@ func (p *IPEcho) echoIP(w dns.ResponseWriter, r *dns.Msg) {
 	}
 }
 
-func (p *IPEcho) parseIP(question *dns.Question) net.IP {
+func (p *ipecho) parseIP(question *dns.Question) net.IP {
 	if p.Config.Debug {
 		log.Printf("Query for '%s'", question.Name)
 	}

@@ -16,13 +16,13 @@ func init() {
 
 func setup(c *caddy.Controller) error {
 	c.Next()
-	config, err := NewConfigFromDispenser(c.Dispenser)
+	config, err := newConfigFromDispenser(c.Dispenser)
 	if err != nil {
 		return plugin.Error("ipecho", err)
 	}
 
 	dnsserver.GetConfig(c).AddPlugin(func(next plugin.Handler) plugin.Handler {
-		return IPEcho{Next: next, Config: config}
+		return ipecho{Next: next, Config: config}
 	})
 
 	return nil

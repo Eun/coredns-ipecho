@@ -10,7 +10,7 @@ import (
 	"github.com/mholt/caddy/caddyfile"
 )
 
-type Config struct {
+type config struct {
 	// Domains defines the Domains we will react to
 	Domains []string
 	// TTL to use for response
@@ -19,8 +19,8 @@ type Config struct {
 	Debug bool
 }
 
-func NewConfigFromDispenser(c caddyfile.Dispenser) (*Config, error) {
-	config := Config{
+func newConfigFromDispenser(c caddyfile.Dispenser) (*config, error) {
+	config := config{
 		TTL: 2629800,
 	}
 

@@ -38,8 +38,8 @@ func (d *dummyResponseWriter) GetBytes() []byte { return d.bytes }
 func (d *dummyResponseWriter) ClearBytes()      { d.bytes = nil }
 
 func TestServeDNS(t *testing.T) {
-	p := IPEcho{
-		Config: &Config{
+	p := ipecho{
+		Config: &config{
 			Domains: []string{
 				"example1.com.",
 			},
@@ -52,7 +52,7 @@ func TestServeDNS(t *testing.T) {
 		d := &dummyResponseWriter{}
 		p.ServeDNS(context.Background(), d, &dns.Msg{
 			Question: []dns.Question{
-				dns.Question{
+				{
 					Name:   "127.0.0.1.example1.com.",
 					Qclass: dns.ClassINET,
 					Qtype:  dns.TypeA,
@@ -71,7 +71,7 @@ func TestServeDNS(t *testing.T) {
 		d := &dummyResponseWriter{}
 		p.ServeDNS(context.Background(), d, &dns.Msg{
 			Question: []dns.Question{
-				dns.Question{
+				{
 					Name:   "::1.example1.com.",
 					Qclass: dns.ClassINET,
 					Qtype:  dns.TypeAAAA,
@@ -90,7 +90,7 @@ func TestServeDNS(t *testing.T) {
 		d := &dummyResponseWriter{}
 		p.ServeDNS(context.Background(), d, &dns.Msg{
 			Question: []dns.Question{
-				dns.Question{
+				{
 					Name:   "::1.example1.com.",
 					Qclass: dns.ClassINET,
 					Qtype:  dns.TypeA,
@@ -110,7 +110,7 @@ func TestServeDNS(t *testing.T) {
 		d := &dummyResponseWriter{}
 		p.ServeDNS(context.Background(), d, &dns.Msg{
 			Question: []dns.Question{
-				dns.Question{
+				{
 					Name:   "127.0.0.1.example1.com.",
 					Qclass: dns.ClassINET,
 					Qtype:  dns.TypeAAAA,
@@ -129,12 +129,12 @@ func TestServeDNS(t *testing.T) {
 		d := &dummyResponseWriter{}
 		p.ServeDNS(context.Background(), d, &dns.Msg{
 			Question: []dns.Question{
-				dns.Question{
+				{
 					Name:   "test.example1.com.",
 					Qclass: dns.ClassINET,
 					Qtype:  dns.TypeA,
 				},
-				dns.Question{
+				{
 					Name:   "test.example1.com.",
 					Qclass: dns.ClassINET,
 					Qtype:  dns.TypeAAAA,
@@ -148,7 +148,7 @@ func TestServeDNS(t *testing.T) {
 		d := &dummyResponseWriter{}
 		p.ServeDNS(context.Background(), d, &dns.Msg{
 			Question: []dns.Question{
-				dns.Question{
+				{
 					Name:   "example1.com.",
 					Qclass: dns.ClassINET,
 					Qtype:  dns.TypeA,
@@ -162,7 +162,7 @@ func TestServeDNS(t *testing.T) {
 		d := &dummyResponseWriter{}
 		p.ServeDNS(context.Background(), d, &dns.Msg{
 			Question: []dns.Question{
-				dns.Question{
+				{
 					Name:   ".example1.com.",
 					Qclass: dns.ClassINET,
 					Qtype:  dns.TypeA,
@@ -176,7 +176,7 @@ func TestServeDNS(t *testing.T) {
 		d := &dummyResponseWriter{}
 		p.ServeDNS(context.Background(), d, &dns.Msg{
 			Question: []dns.Question{
-				dns.Question{
+				{
 					Name:   ".example2.com.",
 					Qclass: dns.ClassINET,
 					Qtype:  dns.TypeA,
@@ -196,7 +196,7 @@ func TestServeDNS(t *testing.T) {
 		d := &dummyResponseWriter{}
 		p.ServeDNS(context.Background(), d, &dns.Msg{
 			Question: []dns.Question{
-				dns.Question{
+				{
 					Name:   ".example1.com.",
 					Qclass: dns.ClassANY,
 					Qtype:  dns.TypeA,
@@ -210,12 +210,12 @@ func TestServeDNS(t *testing.T) {
 		d := &dummyResponseWriter{}
 		p.ServeDNS(context.Background(), d, &dns.Msg{
 			Question: []dns.Question{
-				dns.Question{
+				{
 					Name:   "127.0.0.1.example1.com.",
 					Qclass: dns.ClassINET,
 					Qtype:  dns.TypeA,
 				},
-				dns.Question{
+				{
 					Name:   "::1.example1.com.",
 					Qclass: dns.ClassINET,
 					Qtype:  dns.TypeAAAA,

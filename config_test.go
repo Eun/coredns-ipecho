@@ -6,7 +6,6 @@ import "github.com/tdewolff/buffer"
 import "github.com/stretchr/testify/require"
 
 func TestNewConfigFromDispenser(t *testing.T) {
-
 	t.Run("Valid Config", func(t *testing.T) {
 		dispenser := caddyfile.NewDispenser("", buffer.NewReader([]byte(`
 			{
@@ -17,7 +16,7 @@ func TestNewConfigFromDispenser(t *testing.T) {
 				Debug
 			}
 		`)))
-		config, err := NewConfigFromDispenser(dispenser)
+		config, err := newConfigFromDispenser(dispenser)
 		require.NoError(t, err)
 		require.NotNil(t, config)
 		require.Equal(t, 2, len(config.Domains))
@@ -31,7 +30,7 @@ func TestNewConfigFromDispenser(t *testing.T) {
 			{
 			}
 		`)))
-		config, err := NewConfigFromDispenser(dispenser)
+		config, err := newConfigFromDispenser(dispenser)
 		require.NoError(t, err)
 		require.NotNil(t, config)
 		require.Equal(t, 0, len(config.Domains))
@@ -39,7 +38,7 @@ func TestNewConfigFromDispenser(t *testing.T) {
 		require.Equal(t, false, config.Debug)
 
 		dispenser = caddyfile.NewDispenser("", buffer.NewReader([]byte(``)))
-		config, err = NewConfigFromDispenser(dispenser)
+		config, err = newConfigFromDispenser(dispenser)
 		require.NoError(t, err)
 		require.NotNil(t, config)
 		require.Equal(t, 0, len(config.Domains))
@@ -52,7 +51,7 @@ func TestNewConfigFromDispenser(t *testing.T) {
 				TTL SixtySeconds
 			}
 		`)))
-		config, err := NewConfigFromDispenser(dispenser)
+		config, err := newConfigFromDispenser(dispenser)
 		require.Error(t, err)
 		require.Nil(t, config)
 	})
@@ -62,7 +61,7 @@ func TestNewConfigFromDispenser(t *testing.T) {
 				Domain 127.0.0.1
 			}
 		`)))
-		config, err := NewConfigFromDispenser(dispenser)
+		config, err := newConfigFromDispenser(dispenser)
 		require.Error(t, err)
 		require.Nil(t, config)
 	})
