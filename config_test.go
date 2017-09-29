@@ -53,20 +53,21 @@ func TestNewConfigFromDispenser(t *testing.T) {
 		require.Equal(t, uint32(2629800), config.TTL)
 		require.Equal(t, false, config.Debug)
 	})
-	t.Run("Invalid TTL", func(t *testing.T) {
+	t.Run("Invalid Domain", func(t *testing.T) {
 		dispenser := caddyfile.NewDispenser("", buffer.NewReader([]byte(`
 			{
-				TTL SixtySeconds
+				Domain 127.0.0.1
 			}
 		`)))
 		config, err := newConfigFromDispenser(dispenser)
 		require.Error(t, err)
 		require.Nil(t, config)
 	})
-	t.Run("Invalid Domain", func(t *testing.T) {
+	t.Run("Invalid TTL", func(t *testing.T) {
 		dispenser := caddyfile.NewDispenser("", buffer.NewReader([]byte(`
 			{
-				Domain 127.0.0.1
+				Domain example1.com
+				TTL SixtySeconds
 			}
 		`)))
 		config, err := newConfigFromDispenser(dispenser)
