@@ -41,14 +41,14 @@ func (p *ipecho) echoIP(w dns.ResponseWriter, r *dns.Msg) {
 			ip := p.parseIP(&question)
 			if ip == nil {
 				if p.Config.Debug {
-					log.Printf("Parsed IP of '%s' is nil\n", question.Name)
+					log.Printf("[ipecho] Parsed IP of '%s' is nil\n", question.Name)
 				}
 				continue
 			}
 			// not an ip4
 			if ip4 := ip.To4(); ip4 != nil {
 				if p.Config.Debug {
-					log.Printf("Parsed IP of '%s' is an IPv4 address\n", question.Name)
+					log.Printf("[ipecho] Parsed IP of '%s' is an IPv4 address\n", question.Name)
 				}
 				rrs = append(rrs, &dns.A{
 					Hdr: dns.RR_Header{
@@ -61,7 +61,7 @@ func (p *ipecho) echoIP(w dns.ResponseWriter, r *dns.Msg) {
 				})
 			} else {
 				if p.Config.Debug {
-					log.Printf("Parsed IP of '%s' is an IPv6 address\n", question.Name)
+					log.Printf("[ipecho] Parsed IP of '%s' is an IPv6 address\n", question.Name)
 				}
 				rrs = append(rrs, &dns.AAAA{
 					Hdr: dns.RR_Header{
@@ -78,7 +78,7 @@ func (p *ipecho) echoIP(w dns.ResponseWriter, r *dns.Msg) {
 
 	if len(rrs) > 0 {
 		if p.Config.Debug {
-			log.Printf("Answering with %d rr's\n", len(rrs))
+			log.Printf("[ipecho] Answering with %d rr's\n", len(rrs))
 		}
 		w.WriteMsg(&dns.Msg{
 			Answer: rrs,
@@ -88,7 +88,7 @@ func (p *ipecho) echoIP(w dns.ResponseWriter, r *dns.Msg) {
 
 func (p *ipecho) parseIP(question *dns.Question) net.IP {
 	if p.Config.Debug {
-		log.Printf("Query for '%s'", question.Name)
+		log.Printf("[ipecho] Query for '%s'", question.Name)
 	}
 
 	for _, domain := range p.Config.Domains {
@@ -96,26 +96,26 @@ func (p *ipecho) parseIP(question *dns.Question) net.IP {
 			subdomain := question.Name[:len(question.Name)-len(domain)]
 			if len(subdomain) <= 0 {
 				if p.Config.Debug {
-					log.Printf("Query ('%s') has no subomain\n", question.Name)
+					log.Printf("[ipecho] Query ('%s') has no subomain\n", question.Name)
 				}
 				return nil
 			}
 			subdomain = strings.Trim(subdomain, ".")
 			if len(subdomain) <= 0 {
 				if p.Config.Debug {
-					log.Printf("Parsed Subdomain of '%s' is empty\n", question.Name)
+					log.Printf("[ipecho] Parsed Subdomain of '%s' is empty\n", question.Name)
 				}
 				return nil
 			}
 			if p.Config.Debug {
-				log.Printf("Parsed Subdomain of '%s' is '%s'\n", question.Name, subdomain)
+				log.Printf("[ipecho] Parsed Subdomain of '%s' is '%s'\n", question.Name, subdomain)
 			}
 			return net.ParseIP(subdomain)
 		}
 	}
 
 	if p.Config.Debug {
-		log.Printf("Query ('%s') does not end with one of the domains (%s)\n", question.Name, strings.Join(p.Config.Domains, ", "))
+		log.Printf("[ipecho] Query ('%s') does not end with one of the domains (%s)\n", question.Name, strings.Join(p.Config.Domains, ", "))
 	}
 	return nil
 }
