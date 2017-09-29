@@ -25,23 +25,31 @@ func TestNewConfigFromDispenser(t *testing.T) {
 		require.Equal(t, uint32(60), config.TTL)
 		require.Equal(t, true, config.Debug)
 	})
-	t.Run("Default Values", func(t *testing.T) {
+	t.Run("Emtpy Config", func(t *testing.T) {
 		dispenser := caddyfile.NewDispenser("", buffer.NewReader([]byte(`
 			{
 			}
 		`)))
 		config, err := newConfigFromDispenser(dispenser)
-		require.NoError(t, err)
-		require.NotNil(t, config)
-		require.Equal(t, 0, len(config.Domains))
-		require.Equal(t, uint32(2629800), config.TTL)
-		require.Equal(t, false, config.Debug)
+		require.Error(t, err)
+		require.Nil(t, config)
 
 		dispenser = caddyfile.NewDispenser("", buffer.NewReader([]byte(``)))
 		config, err = newConfigFromDispenser(dispenser)
+		require.Error(t, err)
+		require.Nil(t, config)
+	})
+
+	t.Run("Default Values", func(t *testing.T) {
+		dispenser := caddyfile.NewDispenser("", buffer.NewReader([]byte(`
+			{
+				Domain example1.com
+			}
+		`)))
+		config, err := newConfigFromDispenser(dispenser)
 		require.NoError(t, err)
 		require.NotNil(t, config)
-		require.Equal(t, 0, len(config.Domains))
+		require.Equal(t, 1, len(config.Domains))
 		require.Equal(t, uint32(2629800), config.TTL)
 		require.Equal(t, false, config.Debug)
 	})
