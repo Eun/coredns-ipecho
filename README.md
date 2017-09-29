@@ -1,4 +1,4 @@
-# ipecho [![Codecov](https://img.shields.io/codecov/c/github/Eun/coredns-ipecho.svg)]() [![Codeship](https://img.shields.io/codeship/3f692b30-8737-0135-80bd-7e6e015d56ad.svg)]()
+# ipecho [![Codecov](https://img.shields.io/codecov/c/github/Eun/coredns-ipecho.svg)]()
 *ipecho* is an [coredns](https://github.com/coredns/coredns/) plugin, it answers ip subdomain queries with the ip itself.
 
 ## Example

@@ -1,0 +1,8 @@
+language: go
+go:
+  - 1.9
+
+go_import_path: github.com/Eun/coredns-ipecho
+
+after_success:
+- bash <(curl -s https://codecov.io/bash)
