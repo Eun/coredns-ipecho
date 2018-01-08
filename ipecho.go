@@ -17,16 +17,18 @@ type ipecho struct {
 
 // ServeDNS implements the middleware.Handler interface.
 func (p ipecho) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg) (int, error) {
-	p.echoIP(w, r)
+	if p.echoIP(w, r) {
+		return dns.RcodeSuccess, nil
+	}
 	return plugin.NextOrFailure(p.Name(), p.Next, ctx, w, r)
 }
 
 // Name implements the Handler interface.
 func (ipecho) Name() string { return "IPEcho" }
 
-func (p *ipecho) echoIP(w dns.ResponseWriter, r *dns.Msg) {
+func (p *ipecho) echoIP(w dns.ResponseWriter, r *dns.Msg) bool {
 	if len(r.Question) <= 0 {
-		return
+		return false
 	}
 
 	var rrs []dns.RR
@@ -80,10 +82,13 @@ func (p *ipecho) echoIP(w dns.ResponseWriter, r *dns.Msg) {
 		if p.Config.Debug {
 			log.Printf("[ipecho] Answering with %d rr's\n", len(rrs))
 		}
-		w.WriteMsg(&dns.Msg{
-			Answer: rrs,
-		})
+		m := new(dns.Msg)
+		m.SetReply(r)
+		m.Answer = rrs
+		w.WriteMsg(m)
+		return true
 	}
+	return false
 }
 
 func (p *ipecho) parseIP(question *dns.Question) net.IP {
