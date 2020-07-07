@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/asaskevich/govalidator"
-	"github.com/mholt/caddy/caddyfile"
+	"github.com/caddyserver/caddy/caddyfile"
 )
 
 type config struct {

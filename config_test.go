@@ -1,9 +1,12 @@
 package ipecho
 
-import "testing"
-import "github.com/mholt/caddy/caddyfile"
-import "github.com/tdewolff/buffer"
-import "github.com/stretchr/testify/require"
+import (
+	"testing"
+
+	"github.com/caddyserver/caddy/caddyfile"
+	"github.com/stretchr/testify/require"
+	"github.com/tdewolff/buffer"
+)
 
 func TestNewConfigFromDispenser(t *testing.T) {
 	t.Run("Valid Config", func(t *testing.T) {
