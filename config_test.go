@@ -3,7 +3,7 @@ package ipecho
 import (
 	"testing"
 
-	"github.com/caddyserver/caddy/caddyfile"
+	"github.com/coredns/caddy/caddyfile"
 	"github.com/stretchr/testify/require"
 	"github.com/tdewolff/buffer"
 )
