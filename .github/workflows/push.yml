@@ -61,7 +61,7 @@ jobs:
         uses: coverallsapp/github-action@1.1.3
         with:
           github-token: ${{ secrets.github_token }}
-          path-to-profile: coverage-${{ matrix.platform }}-${{ steps.go-mod-details.outputs.go_version }}.cov
+          path-to-lcov: coverage-${{ matrix.platform }}-${{ steps.go-mod-details.outputs.go_version }}.cov
           flag-name: ${{ matrix.platform }}-${{ steps.go-mod-details.outputs.go_version }}
           parallel: true
 
