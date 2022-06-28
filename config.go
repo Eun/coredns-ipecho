@@ -31,7 +31,7 @@ func newConfigFromDispenser(c caddyfile.Dispenser) (*config, error) {
 				if !govalidator.IsDNSName(domain) {
 					return nil, fmt.Errorf("'%s' is not a valid domain name", domain)
 				}
-				domain = domain + "."
+				domain += "."
 
 				exists := false
 				for i := range config.Domains {

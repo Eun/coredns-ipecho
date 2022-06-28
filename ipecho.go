@@ -27,7 +27,7 @@ func (p ipecho) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg) 
 func (ipecho) Name() string { return "IPEcho" }
 
 func (p *ipecho) echoIP(w dns.ResponseWriter, r *dns.Msg) bool {
-	if len(r.Question) <= 0 {
+	if len(r.Question) == 0 {
 		return false
 	}
 
@@ -99,14 +99,14 @@ func (p *ipecho) parseIP(question *dns.Question) net.IP {
 	for _, domain := range p.Config.Domains {
 		if strings.HasSuffix(strings.ToLower(question.Name), domain) == true {
 			subdomain := question.Name[:len(question.Name)-len(domain)]
-			if len(subdomain) <= 0 {
+			if len(subdomain) == 0 {
 				if p.Config.Debug {
 					log.Printf("[ipecho] Query ('%s') has no subomain\n", question.Name)
 				}
 				return nil
 			}
 			subdomain = strings.Trim(subdomain, ".")
-			if len(subdomain) <= 0 {
+			if len(subdomain) == 0 {
 				if p.Config.Debug {
 					log.Printf("[ipecho] Parsed Subdomain of '%s' is empty\n", question.Name)
 				}
