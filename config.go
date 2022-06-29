@@ -80,7 +80,7 @@ func parseTTLPart(c caddyfile.Dispenser, cfg *config) error {
 	if !c.NextArg() {
 		return nil
 	}
-	//noling: gomnd // parse ttl as uint32 with base 10
+	//nolint: gomnd // parse ttl as uint32 with base 10
 	ttl, err := strconv.ParseUint(c.Val(), 10, 32)
 	if err != nil {
 		return fmt.Errorf("invalid TTL value: '%s'", c.Val())
