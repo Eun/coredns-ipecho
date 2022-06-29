@@ -20,7 +20,7 @@ type config struct {
 }
 
 func newConfigFromDispenser(c caddyfile.Dispenser) (*config, error) {
-	config := config{
+	cfg := config{
 		TTL: 2629800,
 	}
 
@@ -34,36 +34,36 @@ func newConfigFromDispenser(c caddyfile.Dispenser) (*config, error) {
 				domain += "."
 
 				exists := false
-				for i := range config.Domains {
-					if config.Domains[i] == domain {
+				for i := range cfg.Domains {
+					if cfg.Domains[i] == domain {
 						exists = true
 						break
 					}
 				}
 
-				if exists == false {
-					config.Domains = append(config.Domains, domain)
+				if !exists {
+					cfg.Domains = append(cfg.Domains, domain)
 				}
 			}
 		} else if strings.EqualFold(c.Val(), "ttl") {
 			if c.NextArg() {
 				ttl, err := strconv.ParseUint(c.Val(), 10, 32)
 				if err != nil {
-					return nil, fmt.Errorf("Invalid TTL value: '%s'", c.Val())
+					return nil, fmt.Errorf("invalid TTL value: '%s'", c.Val())
 				}
-				config.TTL = uint32(ttl)
+				cfg.TTL = uint32(ttl)
 			}
 		} else if strings.EqualFold(c.Val(), "debug") {
-			config.Debug = true
+			cfg.Debug = true
 		}
 	}
-	if config.Debug {
+	if cfg.Debug {
 		log.Println("[ipecho] Debug Mode is on")
-		log.Printf("[ipecho] Parsed %d Domains: %s\n", len(config.Domains), strings.Join(config.Domains, ", "))
-		log.Printf("[ipecho] TTL is %d", config.TTL)
+		log.Printf("[ipecho] Parsed %d Domains: %s\n", len(cfg.Domains), strings.Join(cfg.Domains, ", "))
+		log.Printf("[ipecho] TTL is %d", cfg.TTL)
 	}
-	if len(config.Domains) == 0 {
-		return nil, fmt.Errorf("There is no domain to handle")
+	if len(cfg.Domains) == 0 {
+		return nil, fmt.Errorf("there is no domain to handle")
 	}
-	return &config, nil
+	return &cfg, nil
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/coredns/caddy"
 )
 
+//nolint gochecknoinits // we need the init function to register the plugin
 func init() {
 	caddy.RegisterPlugin("ipecho", caddy.Plugin{
 		ServerType: "dns",
