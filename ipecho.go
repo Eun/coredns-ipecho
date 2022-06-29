@@ -39,42 +39,43 @@ func (p *ipecho) echoIP(w dns.ResponseWriter, r *dns.Msg) bool {
 			continue
 		}
 
-		if question.Qtype == dns.TypeA || question.Qtype == dns.TypeAAAA {
-			ip := p.parseIP(&question)
-			if ip == nil {
-				if p.Config.Debug {
-					log.Printf("[ipecho] Parsed IP of '%s' is nil\n", question.Name)
-				}
-				continue
+		if question.Qtype != dns.TypeA && question.Qtype != dns.TypeAAAA {
+			continue
+		}
+		ip := p.parseIP(&question)
+		if ip == nil {
+			if p.Config.Debug {
+				log.Printf("[ipecho] Parsed IP of '%s' is nil\n", question.Name)
 			}
-			// not an ip4
-			if ip4 := ip.To4(); ip4 != nil {
-				if p.Config.Debug {
-					log.Printf("[ipecho] Parsed IP of '%s' is an IPv4 address\n", question.Name)
-				}
-				rrs = append(rrs, &dns.A{
-					Hdr: dns.RR_Header{
-						Name:   question.Name,
-						Rrtype: dns.TypeA,
-						Class:  dns.ClassINET,
-						Ttl:    p.Config.TTL,
-					},
-					A: ip,
-				})
-			} else {
-				if p.Config.Debug {
-					log.Printf("[ipecho] Parsed IP of '%s' is an IPv6 address\n", question.Name)
-				}
-				rrs = append(rrs, &dns.AAAA{
-					Hdr: dns.RR_Header{
-						Name:   question.Name,
-						Rrtype: dns.TypeAAAA,
-						Class:  dns.ClassINET,
-						Ttl:    p.Config.TTL,
-					},
-					AAAA: ip,
-				})
+			continue
+		}
+		// not an ip4
+		if ip4 := ip.To4(); ip4 != nil {
+			if p.Config.Debug {
+				log.Printf("[ipecho] Parsed IP of '%s' is an IPv4 address\n", question.Name)
 			}
+			rrs = append(rrs, &dns.A{
+				Hdr: dns.RR_Header{
+					Name:   question.Name,
+					Rrtype: dns.TypeA,
+					Class:  dns.ClassINET,
+					Ttl:    p.Config.TTL,
+				},
+				A: ip,
+			})
+		} else {
+			if p.Config.Debug {
+				log.Printf("[ipecho] Parsed IP of '%s' is an IPv6 address\n", question.Name)
+			}
+			rrs = append(rrs, &dns.AAAA{
+				Hdr: dns.RR_Header{
+					Name:   question.Name,
+					Rrtype: dns.TypeAAAA,
+					Class:  dns.ClassINET,
+					Ttl:    p.Config.TTL,
+				},
+				AAAA: ip,
+			})
 		}
 	}
 
