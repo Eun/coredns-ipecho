@@ -85,7 +85,7 @@ func (p *ipecho) echoIP(w dns.ResponseWriter, r *dns.Msg) bool {
 		m := new(dns.Msg)
 		m.SetReply(r)
 		m.Answer = rrs
-		w.WriteMsg(m)
+		_ = w.WriteMsg(m)
 		return true
 	}
 	return false
