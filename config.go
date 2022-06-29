@@ -29,6 +29,7 @@ func newConfigFromDispenser(c caddyfile.Dispenser) (*config, error) {
 	}
 
 	for c.NextBlock() {
+		var err error
 		if strings.EqualFold(c.Val(), "domain") {
 			err = parseDomainPart(c, &cfg)
 		} else if strings.EqualFold(c.Val(), "ttl") {
