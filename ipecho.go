@@ -99,14 +99,14 @@ func (p *ipecho) parseIP(question *dns.Question) net.IP {
 	for _, domain := range p.Config.Domains {
 		if strings.HasSuffix(strings.ToLower(question.Name), domain) == true {
 			subdomain := question.Name[:len(question.Name)-len(domain)]
-			if len(subdomain) == 0 {
+			if subdomain == "" {
 				if p.Config.Debug {
 					log.Printf("[ipecho] Query ('%s') has no subomain\n", question.Name)
 				}
 				return nil
 			}
 			subdomain = strings.Trim(subdomain, ".")
-			if len(subdomain) == 0 {
+			if subdomain == "" {
 				if p.Config.Debug {
 					log.Printf("[ipecho] Parsed Subdomain of '%s' is empty\n", question.Name)
 				}

@@ -62,7 +62,7 @@ func newConfigFromDispenser(c caddyfile.Dispenser) (*config, error) {
 		log.Printf("[ipecho] Parsed %d Domains: %s\n", len(config.Domains), strings.Join(config.Domains, ", "))
 		log.Printf("[ipecho] TTL is %d", config.TTL)
 	}
-	if len(config.Domains) <= 0 {
+	if len(config.Domains) == 0 {
 		return nil, fmt.Errorf("There is no domain to handle")
 	}
 	return &config, nil
