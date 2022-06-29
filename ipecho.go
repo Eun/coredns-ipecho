@@ -98,26 +98,27 @@ func (p *ipecho) parseIP(question *dns.Question) net.IP {
 	}
 
 	for _, domain := range p.Config.Domains {
-		if strings.HasSuffix(strings.ToLower(question.Name), domain) == true {
-			subdomain := question.Name[:len(question.Name)-len(domain)]
-			if subdomain == "" {
-				if p.Config.Debug {
-					log.Printf("[ipecho] Query ('%s') has no subomain\n", question.Name)
-				}
-				return nil
-			}
-			subdomain = strings.Trim(subdomain, ".")
-			if subdomain == "" {
-				if p.Config.Debug {
-					log.Printf("[ipecho] Parsed Subdomain of '%s' is empty\n", question.Name)
-				}
-				return nil
-			}
-			if p.Config.Debug {
-				log.Printf("[ipecho] Parsed Subdomain of '%s' is '%s'\n", question.Name, subdomain)
-			}
-			return net.ParseIP(subdomain)
+		if !strings.HasSuffix(strings.ToLower(question.Name), domain) {
+			continue
 		}
+		subdomain := question.Name[:len(question.Name)-len(domain)]
+		if subdomain == "" {
+			if p.Config.Debug {
+				log.Printf("[ipecho] Query ('%s') has no subomain\n", question.Name)
+			}
+			return nil
+		}
+		subdomain = strings.Trim(subdomain, ".")
+		if subdomain == "" {
+			if p.Config.Debug {
+				log.Printf("[ipecho] Parsed Subdomain of '%s' is empty\n", question.Name)
+			}
+			return nil
+		}
+		if p.Config.Debug {
+			log.Printf("[ipecho] Parsed Subdomain of '%s' is '%s'\n", question.Name, subdomain)
+		}
+		return net.ParseIP(subdomain)
 	}
 
 	if p.Config.Debug {
