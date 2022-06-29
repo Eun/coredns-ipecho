@@ -30,11 +30,14 @@ func newConfigFromDispenser(c caddyfile.Dispenser) (*config, error) {
 
 	for c.NextBlock() {
 		if strings.EqualFold(c.Val(), "domain") {
-			parseDomainPart(c, &cfg)
+			err = parseDomainPart(c, &cfg)
 		} else if strings.EqualFold(c.Val(), "ttl") {
-			parseTTLPart(c, &cfg)
+			err = parseTTLPart(c, &cfg)
 		} else if strings.EqualFold(c.Val(), "debug") {
-			cfg.Debug = true
+			err = parseDebugPart(c, &cfg)
+		}
+		if err != nil {
+			return nil, err
 		}
 	}
 	if cfg.Debug {
@@ -48,13 +51,13 @@ func newConfigFromDispenser(c caddyfile.Dispenser) (*config, error) {
 	return &cfg, nil
 }
 
-func parseDomainPart(c caddyfile.Dispenser, cfg *config) {
+func parseDomainPart(c caddyfile.Dispenser, cfg *config) error {
 	if !c.NextArg() {
-		return
+		return nil
 	}
 	domain := strings.ToLower(strings.Trim(c.Val(), "."))
 	if !govalidator.IsDNSName(domain) {
-		return nil, fmt.Errorf("'%s' is not a valid domain name", domain)
+		return fmt.Errorf("'%s' is not a valid domain name", domain)
 	}
 	domain += "."
 
@@ -69,16 +72,23 @@ func parseDomainPart(c caddyfile.Dispenser, cfg *config) {
 	if !exists {
 		cfg.Domains = append(cfg.Domains, domain)
 	}
+	return nil
 }
 
-func parseTTLPart(c caddyfile.Dispenser, cfg *config) {
+func parseTTLPart(c caddyfile.Dispenser, cfg *config) error {
 	if !c.NextArg() {
-		return
+		return nil
 	}
 	//noling: gomnd // parse ttl as uint32 with base 10
 	ttl, err := strconv.ParseUint(c.Val(), 10, 32)
 	if err != nil {
-		return nil, fmt.Errorf("invalid TTL value: '%s'", c.Val())
+		return fmt.Errorf("invalid TTL value: '%s'", c.Val())
 	}
 	cfg.TTL = uint32(ttl)
+	return nil
+}
+
+func parseDebugPart(c caddyfile.Dispenser, cfg *config) error {
+	cfg.Debug = true
+	return nil
 }
