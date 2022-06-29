@@ -19,40 +19,20 @@ type config struct {
 	Debug bool
 }
 
+const (
+	defaultTTL = 2629800
+)
+
 func newConfigFromDispenser(c caddyfile.Dispenser) (*config, error) {
 	cfg := config{
-		TTL: 2629800,
+		TTL: defaultTTL,
 	}
 
 	for c.NextBlock() {
 		if strings.EqualFold(c.Val(), "domain") {
-			if c.NextArg() {
-				domain := strings.ToLower(strings.Trim(c.Val(), "."))
-				if !govalidator.IsDNSName(domain) {
-					return nil, fmt.Errorf("'%s' is not a valid domain name", domain)
-				}
-				domain += "."
-
-				exists := false
-				for i := range cfg.Domains {
-					if cfg.Domains[i] == domain {
-						exists = true
-						break
-					}
-				}
-
-				if !exists {
-					cfg.Domains = append(cfg.Domains, domain)
-				}
-			}
+			parseDomainPart(c, &cfg)
 		} else if strings.EqualFold(c.Val(), "ttl") {
-			if c.NextArg() {
-				ttl, err := strconv.ParseUint(c.Val(), 10, 32)
-				if err != nil {
-					return nil, fmt.Errorf("invalid TTL value: '%s'", c.Val())
-				}
-				cfg.TTL = uint32(ttl)
-			}
+			parseTTLPart(c, &cfg)
 		} else if strings.EqualFold(c.Val(), "debug") {
 			cfg.Debug = true
 		}
@@ -66,4 +46,39 @@ func newConfigFromDispenser(c caddyfile.Dispenser) (*config, error) {
 		return nil, fmt.Errorf("there is no domain to handle")
 	}
 	return &cfg, nil
+}
+
+func parseDomainPart(c caddyfile.Dispenser, cfg *config) {
+	if !c.NextArg() {
+		return
+	}
+	domain := strings.ToLower(strings.Trim(c.Val(), "."))
+	if !govalidator.IsDNSName(domain) {
+		return nil, fmt.Errorf("'%s' is not a valid domain name", domain)
+	}
+	domain += "."
+
+	exists := false
+	for i := range cfg.Domains {
+		if cfg.Domains[i] == domain {
+			exists = true
+			break
+		}
+	}
+
+	if !exists {
+		cfg.Domains = append(cfg.Domains, domain)
+	}
+}
+
+func parseTTLPart(c caddyfile.Dispenser, cfg *config) {
+	if !c.NextArg() {
+		return
+	}
+	//noling: gomnd // parse ttl as uint32 with base 10
+	ttl, err := strconv.ParseUint(c.Val(), 10, 32)
+	if err != nil {
+		return nil, fmt.Errorf("invalid TTL value: '%s'", c.Val())
+	}
+	cfg.TTL = uint32(ttl)
 }
