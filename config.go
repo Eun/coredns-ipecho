@@ -89,7 +89,8 @@ func parseTTLPart(c caddyfile.Dispenser, cfg *config) error {
 	return nil
 }
 
-func parseDebugPart(c caddyfile.Dispenser, cfg *config) error {
+//nolint: unparam // result is always nil
+func parseDebugPart(_ caddyfile.Dispenser, cfg *config) error {
 	cfg.Debug = true
 	return nil
 }
