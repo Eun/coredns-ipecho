@@ -1,5 +1,7 @@
-# ipecho [![Travis](https://img.shields.io/travis/Eun/coredns-ipecho.svg)](https://travis-ci.org/Eun/coredns-ipecho) [![Codecov](https://img.shields.io/codecov/c/github/Eun/coredns-ipecho.svg)](https://codecov.io/gh/Eun/coredns-ipecho) [![go-report](https://goreportcard.com/badge/github.com/Eun/coredns-ipecho)](https://goreportcard.com/report/github.com/Eun/coredns-ipecho)
-
+# ipecho 
+[![Actions Status](https://github.com/Eun/coredns-ipecho/workflows/push/badge.svg)](https://github.com/Eun/coredns-ipecho/actions)
+[![go-report](https://goreportcard.com/badge/github.com/Eun/coredns-ipecho)](https://goreportcard.com/report/github.com/Eun/coredns-ipecho)
+---
 *ipecho* is an [coredns](https://github.com/coredns/coredns/) plugin, it parses the IP out of a subdomain and echos it back as an record.
 
 ## Example

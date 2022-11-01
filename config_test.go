@@ -28,7 +28,7 @@ func TestNewConfigFromDispenser(t *testing.T) {
 		require.Equal(t, uint32(60), config.TTL)
 		require.Equal(t, true, config.Debug)
 	})
-	t.Run("Emtpy Config", func(t *testing.T) {
+	t.Run("Empty Config", func(t *testing.T) {
 		dispenser := caddyfile.NewDispenser("", buffer.NewReader([]byte(`
 			{
 			}

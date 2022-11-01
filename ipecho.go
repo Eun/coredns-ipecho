@@ -27,7 +27,7 @@ func (p ipecho) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg) 
 func (ipecho) Name() string { return "IPEcho" }
 
 func (p *ipecho) echoIP(w dns.ResponseWriter, r *dns.Msg) bool {
-	if len(r.Question) <= 0 {
+	if len(r.Question) == 0 {
 		return false
 	}
 
@@ -39,42 +39,43 @@ func (p *ipecho) echoIP(w dns.ResponseWriter, r *dns.Msg) bool {
 			continue
 		}
 
-		if question.Qtype == dns.TypeA || question.Qtype == dns.TypeAAAA {
-			ip := p.parseIP(&question)
-			if ip == nil {
-				if p.Config.Debug {
-					log.Printf("[ipecho] Parsed IP of '%s' is nil\n", question.Name)
-				}
-				continue
+		if question.Qtype != dns.TypeA && question.Qtype != dns.TypeAAAA {
+			continue
+		}
+		ip := p.parseIP(&question)
+		if ip == nil {
+			if p.Config.Debug {
+				log.Printf("[ipecho] Parsed IP of '%s' is nil\n", question.Name)
 			}
-			// not an ip4
-			if ip4 := ip.To4(); ip4 != nil {
-				if p.Config.Debug {
-					log.Printf("[ipecho] Parsed IP of '%s' is an IPv4 address\n", question.Name)
-				}
-				rrs = append(rrs, &dns.A{
-					Hdr: dns.RR_Header{
-						Name:   question.Name,
-						Rrtype: dns.TypeA,
-						Class:  dns.ClassINET,
-						Ttl:    p.Config.TTL,
-					},
-					A: ip,
-				})
-			} else {
-				if p.Config.Debug {
-					log.Printf("[ipecho] Parsed IP of '%s' is an IPv6 address\n", question.Name)
-				}
-				rrs = append(rrs, &dns.AAAA{
-					Hdr: dns.RR_Header{
-						Name:   question.Name,
-						Rrtype: dns.TypeAAAA,
-						Class:  dns.ClassINET,
-						Ttl:    p.Config.TTL,
-					},
-					AAAA: ip,
-				})
+			continue
+		}
+		// not an ip4
+		if ip4 := ip.To4(); ip4 != nil {
+			if p.Config.Debug {
+				log.Printf("[ipecho] Parsed IP of '%s' is an IPv4 address\n", question.Name)
 			}
+			rrs = append(rrs, &dns.A{
+				Hdr: dns.RR_Header{
+					Name:   question.Name,
+					Rrtype: dns.TypeA,
+					Class:  dns.ClassINET,
+					Ttl:    p.Config.TTL,
+				},
+				A: ip,
+			})
+		} else {
+			if p.Config.Debug {
+				log.Printf("[ipecho] Parsed IP of '%s' is an IPv6 address\n", question.Name)
+			}
+			rrs = append(rrs, &dns.AAAA{
+				Hdr: dns.RR_Header{
+					Name:   question.Name,
+					Rrtype: dns.TypeAAAA,
+					Class:  dns.ClassINET,
+					Ttl:    p.Config.TTL,
+				},
+				AAAA: ip,
+			})
 		}
 	}
 
@@ -85,7 +86,7 @@ func (p *ipecho) echoIP(w dns.ResponseWriter, r *dns.Msg) bool {
 		m := new(dns.Msg)
 		m.SetReply(r)
 		m.Answer = rrs
-		w.WriteMsg(m)
+		_ = w.WriteMsg(m)
 		return true
 	}
 	return false
@@ -97,26 +98,27 @@ func (p *ipecho) parseIP(question *dns.Question) net.IP {
 	}
 
 	for _, domain := range p.Config.Domains {
-		if strings.HasSuffix(strings.ToLower(question.Name), domain) == true {
-			subdomain := question.Name[:len(question.Name)-len(domain)]
-			if len(subdomain) <= 0 {
-				if p.Config.Debug {
-					log.Printf("[ipecho] Query ('%s') has no subomain\n", question.Name)
-				}
-				return nil
-			}
-			subdomain = strings.Trim(subdomain, ".")
-			if len(subdomain) <= 0 {
-				if p.Config.Debug {
-					log.Printf("[ipecho] Parsed Subdomain of '%s' is empty\n", question.Name)
-				}
-				return nil
-			}
-			if p.Config.Debug {
-				log.Printf("[ipecho] Parsed Subdomain of '%s' is '%s'\n", question.Name, subdomain)
-			}
-			return net.ParseIP(subdomain)
+		if !strings.HasSuffix(strings.ToLower(question.Name), domain) {
+			continue
 		}
+		subdomain := question.Name[:len(question.Name)-len(domain)]
+		if subdomain == "" {
+			if p.Config.Debug {
+				log.Printf("[ipecho] Query ('%s') has no subomain\n", question.Name)
+			}
+			return nil
+		}
+		subdomain = strings.Trim(subdomain, ".")
+		if subdomain == "" {
+			if p.Config.Debug {
+				log.Printf("[ipecho] Parsed Subdomain of '%s' is empty\n", question.Name)
+			}
+			return nil
+		}
+		if p.Config.Debug {
+			log.Printf("[ipecho] Parsed Subdomain of '%s' is '%s'\n", question.Name, subdomain)
+		}
+		return net.ParseIP(subdomain)
 	}
 
 	if p.Config.Debug {
