@@ -9,7 +9,7 @@ require (
 	github.com/miekg/dns v1.1.54
 	github.com/stretchr/testify v1.8.2
 	github.com/tdewolff/buffer v2.0.0+incompatible
-	golang.org/x/net v0.9.0
+	golang.org/x/net v0.10.0
 )
 
 require (
@@ -31,7 +31,7 @@ require (
 	github.com/prometheus/procfs v0.8.0 // indirect
 	github.com/tdewolff/test v1.0.7 // indirect
 	golang.org/x/mod v0.8.0 // indirect
-	golang.org/x/sys v0.7.0 // indirect
+	golang.org/x/sys v0.8.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
 	golang.org/x/tools v0.6.0 // indirect
 	google.golang.org/genproto v0.0.0-20221227171554-f9683d7f8bef // indirect
