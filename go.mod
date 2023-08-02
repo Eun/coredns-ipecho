@@ -9,7 +9,7 @@ require (
 	github.com/miekg/dns v1.1.55
 	github.com/stretchr/testify v1.8.4
 	github.com/tdewolff/buffer v2.0.0+incompatible
-	golang.org/x/net v0.12.0
+	golang.org/x/net v0.13.0
 )
 
 require (
