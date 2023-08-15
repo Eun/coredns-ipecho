@@ -22,7 +22,7 @@ jobs:
           go-version: ${{ steps.go-mod-details.outputs.go_version }}
       -
         name: lint
-        uses: golangci/golangci-lint-action@v3.6.0
+        uses: golangci/golangci-lint-action@v3.7.0
         with:
           version: v1.42.0
           # optional: show only new issues if it's a pull request. The default value is `false`.
