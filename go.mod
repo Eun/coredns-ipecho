@@ -7,7 +7,7 @@ require (
 	github.com/coredns/caddy v1.1.1
 	github.com/coredns/coredns v1.10.1
 	github.com/miekg/dns v1.1.62
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 	github.com/tdewolff/buffer v2.0.0+incompatible
 	golang.org/x/net v0.30.0
 )
